@@ -44,5 +44,10 @@ describe("loadConfig", () => {
       ignoreRobotsTxt: true
     });
   });
+
+  it("loads config using process.env default parameter", () => {
+    const config = loadConfig();
+    expect(config.port).toBeDefined();
+  });
 });
 

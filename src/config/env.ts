@@ -12,6 +12,14 @@ export interface AppConfig {
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
+  if (env === process.env && typeof process.loadEnvFile === "function") {
+    try {
+      process.loadEnvFile();
+    } catch {
+      // Ignore if .env file is missing
+    }
+  }
+
   return {
     host: env.HOST ?? "0.0.0.0",
     port: parseInteger(env.PORT, 3000),
