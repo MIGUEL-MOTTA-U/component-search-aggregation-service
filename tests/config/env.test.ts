@@ -12,7 +12,8 @@ describe("loadConfig", () => {
       cacheTtlSeconds: 1800,
       publicRateLimitMax: 120,
       publicRateLimitWindow: "1 minute",
-      sourceRateLimitMs: 1000
+      sourceRateLimitMs: 1000,
+      ignoreRobotsTxt: false
     });
   });
 
@@ -26,7 +27,8 @@ describe("loadConfig", () => {
       PUBLIC_RATE_LIMIT_MAX: "10",
       PUBLIC_RATE_LIMIT_WINDOW: "30 seconds",
       SOURCE_RATE_LIMIT_MS: "250",
-      SCRAPER_USER_AGENT: "test-agent"
+      SCRAPER_USER_AGENT: "test-agent",
+      IGNORE_ROBOTS_TXT: "true"
     });
 
     expect(config).toEqual({
@@ -38,7 +40,8 @@ describe("loadConfig", () => {
       publicRateLimitMax: 10,
       publicRateLimitWindow: "30 seconds",
       sourceRateLimitMs: 250,
-      scraperUserAgent: "test-agent"
+      scraperUserAgent: "test-agent",
+      ignoreRobotsTxt: true
     });
   });
 });

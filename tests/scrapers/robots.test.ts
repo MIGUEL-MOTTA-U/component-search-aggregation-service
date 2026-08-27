@@ -19,3 +19,11 @@ describe("HttpRobotsClient", () => {
   });
 });
 
+describe("PermissiveRobotsClient", () => {
+  it("always allows fetch regardless of URL", async () => {
+    const { PermissiveRobotsClient } = await import("../../src/adapters/scrapers/common/robots.js");
+    const client = new PermissiveRobotsClient();
+    await expect(client.canFetch("https://example.test/blocked", "agent")).resolves.toBe(true);
+  });
+});
+

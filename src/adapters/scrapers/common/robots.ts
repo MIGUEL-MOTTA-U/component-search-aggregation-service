@@ -30,3 +30,10 @@ export class HttpRobotsClient implements RobotsClient {
     return parser;
   }
 }
+
+export class PermissiveRobotsClient implements RobotsClient {
+  async canFetch(_url: string, _userAgent: string): Promise<boolean> {
+    return true;
+  }
+}
+

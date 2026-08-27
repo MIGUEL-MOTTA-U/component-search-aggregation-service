@@ -2,7 +2,7 @@ import { SearchComponents } from "./application/search-components.js";
 import { MemoryCache } from "./adapters/cache/memory-cache.js";
 import { RedisCache } from "./adapters/cache/redis-cache.js";
 import { createBhScraper } from "./adapters/scrapers/bh/bh-scraper.js";
-import { HttpRobotsClient } from "./adapters/scrapers/common/robots.js";
+import { HttpRobotsClient, PermissiveRobotsClient } from "./adapters/scrapers/common/robots.js";
 import { createTrueCablesScraper } from "./adapters/scrapers/truecables/truecables-scraper.js";
 import { buildServer } from "./adapters/http/server.js";
 import { loadConfig } from "./config/env.js";
@@ -10,7 +10,7 @@ import type { CachePort } from "./ports/cache-port.js";
 
 const config = loadConfig();
 const cache: CachePort = config.cacheDriver === "redis" ? new RedisCache(config.redisUrl) : new MemoryCache();
-const robotsClient = new HttpRobotsClient();
+const robotsClient = config.ignoreRobotsTxt ? new PermissiveRobotsClient() : new HttpRobotsClient();
 const scrapers = [
   createTrueCablesScraper(config.scraperUserAgent, config.sourceRateLimitMs, robotsClient),
   createBhScraper(config.scraperUserAgent, config.sourceRateLimitMs, robotsClient)

@@ -8,6 +8,7 @@ export interface AppConfig {
   publicRateLimitWindow: string;
   sourceRateLimitMs: number;
   scraperUserAgent: string;
+  ignoreRobotsTxt: boolean;
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
@@ -20,7 +21,8 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     publicRateLimitMax: parseInteger(env.PUBLIC_RATE_LIMIT_MAX, 120),
     publicRateLimitWindow: env.PUBLIC_RATE_LIMIT_WINDOW ?? "1 minute",
     sourceRateLimitMs: parseInteger(env.SOURCE_RATE_LIMIT_MS, 1000),
-    scraperUserAgent: env.SCRAPER_USER_AGENT ?? "ComponentSearchAggregationService/0.1 (+contact@example.com)"
+    scraperUserAgent: env.SCRAPER_USER_AGENT ?? "ComponentSearchAggregationService/0.1 (+contact@example.com)",
+    ignoreRobotsTxt: env.IGNORE_ROBOTS_TXT === "true"
   };
 }
 
