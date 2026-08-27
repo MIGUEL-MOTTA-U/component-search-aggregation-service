@@ -1,7 +1,7 @@
 import type { CachePort } from "../ports/cache-port.js";
 import type { ScraperPort } from "../ports/scraper-port.js";
 import { filterComponents } from "../domain/filter-components.js";
-import type { SearchFilters, SearchResult } from "../domain/component.js";
+import type { Component, SearchFilters, SearchResult } from "../domain/component.js";
 
 export class SearchComponents {
   constructor(
@@ -20,16 +20,29 @@ export class SearchComponents {
       return cached;
     }
 
-    const components = (
-      await Promise.all(
-        selectedScrapers.map((scraper) =>
-          scraper.search({
-            query: filters.query,
-            category: filters.category
-          })
-        )
+    const scraperResults = await Promise.allSettled(
+      selectedScrapers.map((scraper) =>
+        scraper.search({
+          query: filters.query,
+          category: filters.category
+        })
       )
-    ).flat();
+    );
+
+    const fulfilled = scraperResults.filter(
+      (res): res is PromiseFulfilledResult<Component[]> => res.status === "fulfilled"
+    );
+
+    if (fulfilled.length === 0 && selectedScrapers.length > 0) {
+      const rejected = scraperResults.find(
+        (res): res is PromiseRejectedResult => res.status === "rejected"
+      );
+      if (rejected) {
+        throw rejected.reason;
+      }
+    }
+
+    const components = fulfilled.flatMap((res) => res.value);
 
     const result = filterComponents(components, filters);
     await this.cache.set(cacheKey, result, this.ttlSeconds);
